@@ -1,0 +1,6 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": ["Astro", "MDX", "mdx", "1on1s", "OKRs", "underperformer", "underperformers"],
+  "ignorePaths": ["node_modules", "dist", ".astro"]
+}

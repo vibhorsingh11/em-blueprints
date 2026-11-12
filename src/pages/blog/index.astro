@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import PostGrid from '../../components/PostGrid.astro';
+import { getPosts, groupBySeries, groupByTag, slugify, accentFor } from '../../utils/posts';
+
+const posts = await getPosts();
+const series = [...groupBySeries(posts).entries()];
+const tags = [...groupByTag(posts).entries()].sort((a, b) => b[1].length - a[1].length);
+---
+
+<BaseLayout title="Blog" description="All posts on engineering management.">
+  <PageHeader
+    eyebrow="Blog"
+    title="Everything I've written."
+    intro="Filter by series for ordered reading, or by topic to dip in. New to this? Try the resources."
+  />
+
+  <div class="mb-10 space-y-4" data-reveal>
+    {
+      series.length > 0 && (
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="eyebrow text-muted w-20">Series</span>
+          {series.map(([name, list]) => (
+            <a
+              href={`/series/${slugify(name)}`}
+              class={`${accentFor(name)} border-ink/15 rounded-full border px-4 py-1.5 text-sm transition hover:-translate-y-0.5`}
+            >
+              {name} · {list.length}
+            </a>
+          ))}
+        </div>
+      )
+    }
+    {
+      tags.length > 0 && (
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="eyebrow text-muted w-20">Topics</span>
+          {tags.map(([tag, list]) => (
+            <a
+              href={`/tags/${slugify(tag)}`}
+              class="border-ink/30 hover:bg-ink hover:text-paper rounded-full border px-4 py-1.5 text-sm transition"
+            >
+              {tag} <span class="text-muted">{list.length}</span>
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </div>
+
+  <PostGrid {posts} featureFirst />
+</BaseLayout>

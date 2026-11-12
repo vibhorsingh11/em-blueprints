@@ -1,0 +1,15 @@
+---
+interface Props {
+  type?: 'tip' | 'warning' | 'story';
+  title?: string;
+}
+const { type = 'tip', title } = Astro.props;
+
+const styles = { tip: 'bg-sage', warning: 'bg-butter', story: 'bg-lilac' };
+const labels = { tip: 'Try this', warning: 'Watch out', story: 'A story' };
+---
+
+<aside class={`not-prose border-ink/15 my-8 rounded-3xl border p-6 ${styles[type]}`}>
+  <p class="eyebrow">{title ?? labels[type]}</p>
+  <div class="font-display mt-2 text-xl leading-snug"><slot /></div>
+</aside>

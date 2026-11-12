@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import PostGrid from '../../components/PostGrid.astro';
+import { getPosts, groupBySeries, slugify } from '../../utils/posts';
+
+export async function getStaticPaths() {
+  const series = groupBySeries(await getPosts());
+  return [...series.entries()].map(([name, posts]) => ({
+    params: { name: slugify(name) },
+    props: { name, posts },
+  }));
+}
+
+const { name, posts } = Astro.props;
+---
+
+<BaseLayout title={name} description={`A ${posts.length}-part series: ${name}.`}>
+  <PageHeader eyebrow={`Series · ${posts.length} parts`} title={name} />
+  <PostGrid {posts} />
+</BaseLayout>

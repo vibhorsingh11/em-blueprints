@@ -1,0 +1,30 @@
+---
+import { render } from 'astro:content';
+import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
+import { getPosts, getRelated, groupBySeries } from '../../utils/posts';
+import { readingTime } from '../../utils/readingTime';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, posts },
+  }));
+}
+
+const { post, posts } = Astro.props;
+const { Content, headings } = await render(post);
+
+const seriesPosts = post.data.series ? (groupBySeries(posts).get(post.data.series) ?? []) : [];
+const related = getRelated(post, posts);
+---
+
+<BlogPostLayout
+  {post}
+  {headings}
+  minutes={readingTime(post.body)}
+  {seriesPosts}
+  {related}
+>
+  <Content />
+</BlogPostLayout>

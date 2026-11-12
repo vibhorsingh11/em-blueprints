@@ -1,0 +1,28 @@
+---
+import type { Post } from '../utils/posts';
+
+interface Props {
+  posts: Post[];
+}
+const { posts } = Astro.props;
+---
+
+{
+  posts.length > 0 && (
+    <section class="not-prose my-14">
+      <p class="eyebrow text-clay">Keep reading</p>
+      <ul class="mt-3">
+        {posts.map((p) => (
+          <li class="border-ink/15 border-b">
+            <a
+              href={`/blog/${p.id}`}
+              class="font-display hover:text-clay flex items-center justify-between py-4 text-2xl transition"
+            >
+              {p.data.title} <span aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

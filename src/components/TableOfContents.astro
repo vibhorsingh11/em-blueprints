@@ -1,0 +1,47 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+const headings = Astro.props.headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  headings.length > 0 && (
+    <nav aria-label="Table of contents" id="toc">
+      <p class="eyebrow text-muted mb-3">On this page</p>
+      <ul class="border-ink/15 space-y-1 border-l text-sm">
+        {headings.map((h) => (
+          <li class={h.depth === 3 ? 'pl-7' : 'pl-4'}>
+            <a
+              href={`#${h.slug}`}
+              class="text-muted hover:text-ink data-[active]:text-clay block py-1 transition data-[active]:font-semibold"
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<script>
+  // Scroll-spy: highlight the TOC entry for the heading nearest the top of the viewport.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('#toc a')];
+  const targets = links
+    .map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))))
+    .filter((el): el is HTMLElement => el !== null);
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        links.forEach((a) => a.toggleAttribute('data-active', a.hash === `#${entry.target.id}`));
+      }
+    },
+    { rootMargin: '-15% 0px -75% 0px' },
+  );
+  targets.forEach((t) => io.observe(t));
+</script>

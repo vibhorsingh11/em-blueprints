@@ -1,0 +1,14 @@
+---
+import { AUTHOR } from '../consts';
+---
+
+<aside class="not-prose border-ink/15 my-10 flex items-center gap-4 border-t pt-8">
+  <span
+    class="bg-butter font-display grid size-14 shrink-0 place-items-center rounded-full text-xl font-medium"
+    aria-hidden="true">{AUTHOR.name[0]}</span
+  >
+  <div>
+    <p class="font-display text-lg font-medium">Written by {AUTHOR.name}</p>
+    <p class="text-muted text-sm">{AUTHOR.bio}</p>
+  </div>
+</aside>

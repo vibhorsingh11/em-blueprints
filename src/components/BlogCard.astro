@@ -1,0 +1,49 @@
+---
+import type { Post } from '../utils/posts';
+import { readingTime } from '../utils/readingTime';
+import PostCover from './PostCover.astro';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+  post: Post;
+  featured?: boolean;
+}
+const { post, featured = false } = Astro.props;
+---
+
+<a
+  href={`/blog/${post.id}`}
+  data-reveal
+  class:list={[
+    'group block',
+    featured && 'lg:grid lg:grid-cols-[1.35fr_1fr] lg:items-center lg:gap-10',
+  ]}
+>
+  <div class="border-ink/15 isolate overflow-hidden rounded-[2rem] border">
+    <div class="transition duration-700 ease-out group-hover:scale-105">
+      <PostCover {post} />
+    </div>
+  </div>
+
+  <div class:list={['pt-6', featured && 'lg:pt-0']}>
+    <p class="eyebrow text-muted flex flex-wrap items-center gap-x-3">
+      <FormattedDate date={post.data.pubDate} />
+      <span aria-hidden="true">·</span>
+      <span>{readingTime(post.body)} min read</span>
+    </p>
+    <h2
+      class:list={[
+        'font-display mt-3 leading-[1.08] font-medium tracking-tight group-hover:italic',
+        featured ? 'text-3xl sm:text-5xl' : 'text-2xl sm:text-3xl',
+      ]}
+    >
+      {post.data.title}
+    </h2>
+    <p class="text-muted mt-3 line-clamp-3 max-w-xl">{post.data.description}</p>
+    <span
+      class="mt-4 inline-flex items-center gap-2 text-sm font-medium transition-all group-hover:gap-3"
+    >
+      Read post <span aria-hidden="true">→</span>
+    </span>
+  </div>
+</a>

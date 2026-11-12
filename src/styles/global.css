@@ -1,0 +1,264 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/* Class-based dark mode ("evening" theme), toggled by ThemeToggle / BaseLayout's inline script. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------- Design tokens ---------- */
+:root {
+  --paper: #f5efe3;
+  --paper-2: #ebe3d0;
+  --ink: #1c1b18;
+  --muted: #655f53;
+  --sage: #b4cfab;
+  --clay: #e8845f;
+  --butter: #f5d56f;
+  --lilac: #c4b4f2;
+}
+
+.dark {
+  --paper: #13150f;
+  --paper-2: #1c1f16;
+  --ink: #f0eadb;
+  --muted: #a8a293;
+  --sage: #3f5a3d;
+  --clay: #b04f31;
+  --butter: #9a7a24;
+  --lilac: #5b4a9c;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-sage: var(--sage);
+  --color-clay: var(--clay);
+  --color-butter: var(--butter);
+  --color-lilac: var(--lilac);
+  --font-display: 'Fraunces Variable', Georgia, serif;
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* ---------- Base ---------- */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-paper text-ink overflow-x-clip font-sans antialiased;
+}
+
+/* Paper grain: a barely-there texture that makes flat colour feel printed. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+::selection {
+  background: var(--clay);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+}
+
+/* ---------- Components ---------- */
+@layer components {
+  /* A bento tile. Colour comes from a bg-* utility; the spotlight follows the cursor. */
+  .tile {
+    @apply border-ink/15 relative isolate overflow-hidden rounded-[2rem] border p-6 transition duration-300 sm:p-8;
+  }
+  .tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s;
+    background: radial-gradient(
+      420px circle at var(--mx, 50%) var(--my, 50%),
+      rgb(255 255 255 / 0.4),
+      transparent 60%
+    );
+  }
+  a.tile:hover,
+  .tile.is-hoverable:hover {
+    @apply -translate-y-1;
+  }
+  .tile:hover::before {
+    opacity: 1;
+  }
+
+  .eyebrow {
+    @apply font-mono text-xs tracking-[0.18em] uppercase;
+  }
+
+  .btn {
+    @apply bg-ink text-paper inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-lg;
+  }
+  .btn-ghost {
+    @apply border-ink/30 hover:bg-ink hover:text-paper inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-medium transition;
+  }
+}
+
+/*
+ * Long-form reading style: warm ink on paper, serif headings, clay accents.
+ * Deliberately NOT inside @layer: the typography plugin sets its default (dark slate) colours in the
+ * utilities layer, and unlayered rules are the only way to reliably override them in both themes.
+ */
+.prose-mindful {
+  --tw-prose-body: var(--ink);
+  --tw-prose-headings: var(--ink);
+  --tw-prose-lead: var(--muted);
+  --tw-prose-links: var(--clay);
+  --tw-prose-bold: var(--ink);
+  --tw-prose-counters: var(--muted);
+  --tw-prose-bullets: var(--clay);
+  --tw-prose-hr: color-mix(in oklab, var(--ink) 20%, transparent);
+  --tw-prose-quotes: var(--ink);
+  --tw-prose-quote-borders: var(--clay);
+  --tw-prose-captions: var(--muted);
+  --tw-prose-code: var(--ink);
+  --tw-prose-pre-code: var(--ink);
+  --tw-prose-pre-bg: var(--paper-2);
+  --tw-prose-th-borders: var(--muted);
+  --tw-prose-td-borders: color-mix(in oklab, var(--ink) 15%, transparent);
+}
+.prose-mindful :is(h1, h2, h3, h4) {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.prose-mindful blockquote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.25em;
+}
+.prose-mindful pre {
+  @apply border-ink/15 rounded-2xl border;
+}
+.prose-mindful a {
+  text-underline-offset: 4px;
+}
+
+/* ---------- Motion ---------- */
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(0.88);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+@keyframes ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes inhale {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  95% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes exhale {
+  0%,
+  45% {
+    opacity: 0;
+  }
+  50%,
+  95% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.orb {
+  animation: breathe 8s ease-in-out infinite;
+}
+.orb-ring {
+  animation: ring 8s ease-out infinite;
+}
+.marquee-track {
+  animation: marquee 40s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+.label-inhale {
+  animation: inhale 8s ease-in-out infinite;
+}
+.label-exhale {
+  animation: exhale 8s ease-in-out infinite;
+}
+
+/* Scroll reveal: only hidden when JS is available, so content never gets stuck invisible. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--d, 0ms);
+}
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .orb,
+  .orb-ring,
+  .marquee-track,
+  .label-inhale,
+  .label-exhale {
+    animation: none;
+  }
+  .label-exhale {
+    opacity: 0;
+  }
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Shiki dual-theme: switch to the dark variables when .dark is on <html>. */
+.dark .astro-code,
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}

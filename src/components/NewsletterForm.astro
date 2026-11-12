@@ -1,0 +1,26 @@
+---
+const action = import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '';
+---
+
+<aside class="tile bg-ink text-paper not-prose !border-transparent" data-reveal>
+  <p class="eyebrow text-clay">The Sunday letter</p>
+  <h2 class="font-display mt-3 max-w-md text-3xl leading-tight font-medium tracking-tight">
+    One calm, practical essay on leading engineers. <em class="text-butter">No noise.</em>
+  </h2>
+  <form action={action} method="post" target="_blank" class="mt-6 flex flex-wrap gap-2">
+    <input
+      type="email"
+      name="email"
+      required
+      placeholder="you@company.com"
+      aria-label="Email address"
+      class="bg-paper/10 border-paper/25 placeholder:text-paper/50 min-w-0 flex-1 rounded-full border px-5 py-3"
+    />
+    <button
+      type="submit"
+      class="bg-clay rounded-full px-6 py-3 font-medium text-white transition hover:-translate-y-0.5 hover:shadow-lg"
+    >
+      Subscribe →
+    </button>
+  </form>
+</aside>
