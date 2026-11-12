@@ -1,0 +1,26 @@
+---
+import { SITE_TITLE } from '../consts';
+---
+
+<footer class="bg-ink text-paper mt-24 overflow-hidden rounded-t-[2.5rem]">
+  <div class="mx-auto max-w-6xl px-6 pt-14">
+    <div class="flex flex-wrap items-start justify-between gap-8">
+      <p class="font-display max-w-sm text-2xl leading-snug italic">
+        Lead gently. Listen first. Ship anyway.
+      </p>
+      <ul class="eyebrow flex flex-wrap gap-x-6 gap-y-2">
+        <li><a href="/rss.xml" class="hover:text-clay transition">Follow via RSS</a></li>
+        <li><a href="#main" class="hover:text-clay transition">Back to top ↑</a></li>
+      </ul>
+    </div>
+    <p
+      class="font-display mt-12 -mb-[0.18em] text-[clamp(3rem,13vw,10rem)] leading-none font-medium tracking-tighter whitespace-nowrap select-none"
+      aria-hidden="true"
+    >
+      {SITE_TITLE}
+    </p>
+  </div>
+  <p class="eyebrow text-paper/60 border-paper/15 border-t px-6 py-4 text-center">
+    © {new Date().getFullYear()} {SITE_TITLE}
+  </p>
+</footer>

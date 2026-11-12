@@ -1,0 +1,14 @@
+<div class="fixed inset-x-0 top-0 z-[70] h-1" aria-hidden="true">
+  <div id="progress" class="bg-clay h-full origin-left scale-x-0"></div>
+</div>
+
+<script>
+  const bar = document.getElementById('progress');
+  const update = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const ratio = max > 0 ? Math.min(1, scrollY / max) : 0;
+    if (bar) bar.style.transform = `scaleX(${ratio})`;
+  };
+  addEventListener('scroll', update, { passive: true });
+  update();
+</script>

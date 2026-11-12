@@ -1,0 +1,31 @@
+---
+import BlogCard from './BlogCard.astro';
+import type { Post } from '../utils/posts';
+
+interface Props {
+  posts: Post[];
+  /** Show the newest post as a wide hero card. Only kicks in with 3+ posts so the grid never looks lopsided. */
+  featureFirst?: boolean;
+}
+const { posts, featureFirst = false } = Astro.props;
+const feature = featureFirst && posts.length >= 3 ? posts[0] : undefined;
+const rest = feature ? posts.slice(1) : posts;
+---
+
+{
+  feature && (
+    <div class="mb-16">
+      <BlogCard post={feature} featured />
+    </div>
+  )
+}
+<div class="grid gap-x-8 gap-y-14 md:grid-cols-2">
+  {
+    rest.map((post, i) => (
+      // Offset the right column for a staggered, editorial rhythm.
+      <div class={i % 2 === 1 ? 'md:mt-16' : ''}>
+        <BlogCard {post} />
+      </div>
+    ))
+  }
+</div>

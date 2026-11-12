@@ -1,0 +1,77 @@
+---
+import { Image } from 'astro:assets';
+import { accentFor, hashOf, type Post } from '../utils/posts';
+
+interface Props {
+  post: Post;
+}
+const { post } = Astro.props;
+const { heroImage, series, tags } = post.data;
+
+const label = series ?? tags[0];
+// Colour varies per post (the series is named in the label) so a grid of covers never looks uniform.
+const accent = accentFor(post.id);
+// Without a heroImage, each post gets one of three generative covers, stable per post.
+const variant = hashOf(post.id) % 3;
+---
+
+<div class="relative">
+  {
+    heroImage ? (
+      <Image
+        src={heroImage}
+        alt=""
+        widths={[480, 800, 1200]}
+        sizes="(min-width: 1024px) 560px, 100vw"
+        class="aspect-[16/10] w-full object-cover"
+      />
+    ) : (
+      <div class={`${accent} relative aspect-[16/10] w-full overflow-hidden`} aria-hidden="true">
+        <svg
+          viewBox="0 0 800 500"
+          preserveAspectRatio="xMidYMid slice"
+          class="absolute inset-0 size-full"
+        >
+          {variant === 0 && (
+            <>
+              <g fill="none" style="stroke: var(--ink)" stroke-opacity=".3" stroke-width="2">
+                {[70, 130, 190, 250, 310].map((r) => (
+                  <circle cx="570" cy="260" r={r} />
+                ))}
+              </g>
+              <circle cx="570" cy="260" r="54" style="fill: var(--paper)" />
+            </>
+          )}
+          {variant === 1 && (
+            <>
+              <path d="M110 500V300a90 90 0 0 1 180 0v200Z" style="fill: var(--paper)" />
+              <path d="M330 500V190a90 90 0 0 1 180 0v310Z" style="fill: var(--ink)" />
+              <path
+                d="M550 500V250a90 90 0 0 1 180 0v250Z"
+                style="fill: var(--paper)"
+                fill-opacity=".55"
+              />
+            </>
+          )}
+          {variant === 2 && (
+            <>
+              <circle cx="400" cy="310" r="170" style="fill: var(--paper)" />
+              <g style="stroke: var(--ink)" stroke-width="3" stroke-opacity=".55">
+                {[330, 360, 392, 428, 468].map((y) => (
+                  <line x1="0" x2="800" y1={y} y2={y} />
+                ))}
+              </g>
+            </>
+          )}
+        </svg>
+      </div>
+    )
+  }
+  {
+    label && (
+      <span class="eyebrow bg-paper/85 text-ink absolute top-4 left-4 rounded-full px-3 py-1 backdrop-blur">
+        {label}
+      </span>
+    )
+  }
+</div>
