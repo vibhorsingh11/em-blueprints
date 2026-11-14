@@ -18,4 +18,18 @@ const blog = defineCollection({
     }),
 });
 
-export const collections = { blog };
+// Technical study material. The first folder under src/content/resources is the track (see RESOURCE_TRACKS).
+const resources = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/resources' }),
+  schema: z.object({
+    title: z.string().max(70),
+    description: z.string().max(160),
+    topic: z.string(),
+    order: z.number().default(0),
+    pubDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { blog, resources };

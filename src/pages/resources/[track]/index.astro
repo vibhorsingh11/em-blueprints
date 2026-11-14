@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+import { RESOURCE_TRACKS } from '../../../consts';
+import { getResources, groupByTopic, inTrack, resourceHref } from '../../../utils/resources';
+
+export function getStaticPaths() {
+  return RESOURCE_TRACKS.map((track) => ({ params: { track: track.slug }, props: { track } }));
+}
+
+const { track } = Astro.props;
+const topics = track.comingSoon ? [] : groupByTopic(inTrack(await getResources(), track.slug));
+---
+
+<BaseLayout title={track.title} description={track.blurb}>
+  <PageHeader eyebrow="Resources" title={track.title} intro={track.blurb} />
+
+  <div class="space-y-6">
+    {
+      topics.length ? (
+        topics.map((group, i) => (
+          <section class="grid gap-4 lg:grid-cols-[19rem_1fr]" data-reveal>
+            <div class={`tile ${track.accent} self-start lg:sticky lg:top-28`}>
+              <p class="eyebrow">Topic {String(i + 1).padStart(2, '0')}</p>
+              <h2 class="font-display mt-2 text-3xl leading-tight font-medium tracking-tight">
+                {group.topic}
+              </h2>
+            </div>
+            <ol class="border-ink/15 border-t">
+              {group.items.map((item, n) => (
+                <li>
+                  <a
+                    href={resourceHref(item)}
+                    class="group border-ink/15 flex items-baseline gap-5 border-b py-6 transition hover:px-3"
+                  >
+                    <span class="eyebrow text-muted">{String(n + 1).padStart(2, '0')}</span>
+                    <span>
+                      <span class="font-display block text-2xl leading-tight font-medium tracking-tight group-hover:italic">
+                        {item.data.title}
+                      </span>
+                      <span class="text-muted mt-1 block max-w-2xl">{item.data.description}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))
+      ) : (
+        <p class="text-muted py-7">Articles for this track are coming soon.</p>
+      )
+    }
+  </div>
+
+  <p class="mt-14">
+    <a href="/resources" class="btn-ghost">← All tracks</a>
+  </p>
+</BaseLayout>
