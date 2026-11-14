@@ -1,0 +1,159 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
+import Orb from '../components/Orb.astro';
+import Marquee from '../components/Marquee.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { getPosts, groupBySeries, groupByTag, slugify } from '../utils/posts';
+import { SITE_DESCRIPTION } from '../consts';
+
+const posts = await getPosts();
+const [featured, ...rest] = posts;
+const startSeries = [...groupBySeries(posts).entries()][0];
+const tags = [...groupByTag(posts).entries()].sort((a, b) => b[1].length - a[1].length).slice(0, 8);
+
+const principles = [
+  'Your calendar is your real strategy doc.',
+  'Praise in public, coach in private, and do both early.',
+  'Clarity is kindness. Vague feedback is a quiet cruelty.',
+  'You are not the bottleneck-fixer. You are the bottleneck-remover.',
+  'A calm manager is a force multiplier.',
+];
+---
+
+<BaseLayout>
+  <!-- Hero -->
+  <section class="grid items-center gap-8 pt-6 lg:grid-cols-[1.7fr_1fr]">
+    <div data-reveal>
+      <p class="eyebrow text-clay">A field guide for engineers who lead</p>
+      <h1
+        class="font-display mt-5 text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] font-medium tracking-tight"
+      >
+        Lead with <em class="text-clay font-normal">calm.</em><br />
+        Grow people.<br />
+        Ship anyway.
+      </h1>
+      <p class="text-muted mt-6 max-w-lg text-lg">{SITE_DESCRIPTION}</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/blog" class="btn">Read the blog <span aria-hidden="true">→</span></a>
+        <a href="/resources" class="btn-ghost">Browse resources</a>
+      </div>
+    </div>
+    <div data-reveal style="--d: 150ms"><Orb /></div>
+  </section>
+
+  <Marquee />
+
+  <!-- Bento grid: every tile owns its corner -->
+  <section aria-label="Highlights" class="grid gap-4 md:grid-cols-6 lg:grid-cols-12">
+    {
+      featured ? (
+        <a
+          href={`/blog/${featured.id}`}
+          data-reveal
+          class="tile bg-clay flex min-h-80 flex-col justify-between text-white md:col-span-6 lg:col-span-7 lg:row-span-2"
+        >
+          <div class="eyebrow flex items-center justify-between">
+            <span>Latest post</span>
+            <FormattedDate date={featured.data.pubDate} />
+          </div>
+          <div>
+            <h2 class="font-display text-4xl leading-[1.05] font-medium tracking-tight sm:text-6xl">
+              {featured.data.title}
+            </h2>
+            <p class="mt-4 max-w-lg text-white/85">{featured.data.description}</p>
+            <span class="mt-6 inline-flex items-center gap-2 font-medium">Read it →</span>
+          </div>
+        </a>
+      ) : (
+        <div class="tile bg-clay flex min-h-80 items-end text-white md:col-span-6 lg:col-span-7 lg:row-span-2">
+          <h2 class="font-display text-4xl font-medium sm:text-6xl">The first post is on its way.</h2>
+        </div>
+      )
+    }
+
+    <div data-reveal style="--d: 100ms" class="tile bg-sage md:col-span-3 lg:col-span-5">
+      <p class="eyebrow">Read in order</p>
+      <h2 class="font-display mt-2 text-3xl font-medium tracking-tight">
+        {startSeries ? startSeries[0] : 'A guided path'}
+      </h2>
+      <ol class="font-display mt-4 space-y-1 text-lg">
+        {
+          startSeries?.[1].slice(0, 3).map((p, i) => (
+            <li>
+              <a href={`/blog/${p.id}`} class="hover:italic">
+                {String(i + 1).padStart(2, '0')} — {p.data.title}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+      <a href="/resources" class="eyebrow mt-4 inline-block underline underline-offset-4">
+        Find your stage →
+      </a>
+    </div>
+
+    <div
+      data-reveal
+      style="--d: 200ms"
+      class="tile bg-butter is-hoverable md:col-span-3 lg:col-span-5"
+    >
+      <p class="eyebrow">Principle</p>
+      <p id="principle" class="font-display mt-3 min-h-[5.5rem] text-2xl leading-snug italic">
+        {principles[0]}
+      </p>
+      <button id="principle-next" type="button" class="eyebrow mt-3 underline underline-offset-4">
+        Another one ↻
+      </button>
+    </div>
+
+    <div data-reveal class="tile bg-lilac md:col-span-3 lg:col-span-6">
+      <p class="eyebrow">Topics</p>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {
+          tags.length ? (
+            tags.map(([tag]) => (
+              <li>
+                <a
+                  href={`/tags/${slugify(tag)}`}
+                  class="border-ink/30 hover:bg-ink hover:text-paper inline-block rounded-full border px-3.5 py-1.5 text-sm transition"
+                >
+                  {tag}
+                </a>
+              </li>
+            ))
+          ) : (
+            <li class="text-muted">Coming soon.</li>
+          )
+        }
+      </ul>
+    </div>
+
+    <div class="md:col-span-3 lg:col-span-6">
+      <NewsletterForm />
+    </div>
+  </section>
+
+  <!-- Editorial list -->
+  <section class="mt-24" aria-labelledby="recent-heading">
+    <div class="flex items-end justify-between gap-4" data-reveal>
+      <h2 id="recent-heading" class="font-display text-5xl font-medium tracking-tight sm:text-7xl">
+        Recent <em class="text-clay font-normal">writing</em>
+      </h2>
+      <a href="/blog" class="eyebrow underline underline-offset-4">All posts →</a>
+    </div>
+    <div class="border-ink/15 mt-8 border-t">
+      {(rest.length ? rest : posts).slice(0, 5).map((post, i) => <PostCard {post} index={i} />)}
+    </div>
+  </section>
+
+  <script define:vars={{ principles }}>
+    let i = 0;
+    const el = document.getElementById('principle');
+    document.getElementById('principle-next')?.addEventListener('click', () => {
+      i = (i + 1) % principles.length;
+      if (el) el.textContent = principles[i];
+    });
+  </script>
+</BaseLayout>

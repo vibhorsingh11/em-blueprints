@@ -1,0 +1,91 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ReadingProgress from '../../../components/ReadingProgress.astro';
+import TableOfContents from '../../../components/TableOfContents.astro';
+import FormattedDate from '../../../components/FormattedDate.astro';
+import { getTrack, getResources, inTrack, resourceHref, slugOf, trackOf } from '../../../utils/resources';
+import { readingTime } from '../../../utils/readingTime';
+
+export async function getStaticPaths() {
+  const resources = await getResources();
+  return resources.map((resource) => ({
+    params: { track: trackOf(resource), slug: slugOf(resource) },
+    props: { resource, siblings: inTrack(resources, trackOf(resource)) },
+  }));
+}
+
+const { resource, siblings } = Astro.props;
+const { title, description, topic, pubDate, updatedDate } = resource.data;
+const track = getTrack(trackOf(resource))!;
+const { Content, headings } = await render(resource);
+
+const index = siblings.findIndex((r) => r.id === resource.id);
+const prev = siblings[index - 1];
+const next = siblings[index + 1];
+---
+
+<BaseLayout {title} {description} type="article" {pubDate} {updatedDate}>
+  <ReadingProgress />
+
+  <header class="mx-auto max-w-6xl pt-6 pb-12 text-center" data-reveal>
+    <a
+      href={`/resources/${track.slug}`}
+      class={`eyebrow ${track.accent} border-ink/15 inline-block rounded-full border px-4 py-1.5`}
+    >
+      {track.title} · {topic}
+    </a>
+    <h1
+      class="font-display mt-6 text-[clamp(2.5rem,7vw,5.5rem)] leading-[1] font-medium tracking-tight"
+    >
+      {title}
+    </h1>
+    <p class="text-muted mx-auto mt-6 max-w-2xl text-xl">{description}</p>
+    <p class="eyebrow text-muted mt-8 flex flex-wrap justify-center gap-x-4 gap-y-1">
+      <span>{readingTime(resource.body)} min read</span>
+      {
+        updatedDate ? (
+          <span>
+            Updated <FormattedDate date={updatedDate} />
+          </span>
+        ) : (
+          <FormattedDate date={pubDate} />
+        )
+      }
+    </p>
+  </header>
+
+  <div class="mx-auto max-w-5xl lg:grid lg:grid-cols-[1fr_13rem] lg:gap-14">
+    <article class="min-w-0">
+      <div class="prose prose-lg prose-mindful max-w-[42rem]">
+        <Content />
+      </div>
+
+      <nav
+        aria-label={`${track.title} navigation`}
+        class="border-ink/15 mt-14 flex max-w-[42rem] justify-between gap-4 border-t pt-6 text-sm font-medium"
+      >
+        {
+          prev ? (
+            <a href={resourceHref(prev)} class="hover:underline">
+              ← {prev.data.title}
+            </a>
+          ) : (
+            <span />
+          )
+        }
+        {
+          next && (
+            <a href={resourceHref(next)} class="text-right hover:underline">
+              {next.data.title} →
+            </a>
+          )
+        }
+      </nav>
+    </article>
+
+    <aside class="hidden lg:block">
+      <div class="sticky top-28"><TableOfContents {headings} /></div>
+    </aside>
+  </div>
+</BaseLayout>

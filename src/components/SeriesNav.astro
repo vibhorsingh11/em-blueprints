@@ -1,0 +1,40 @@
+---
+import { accentFor, type Post } from '../utils/posts';
+
+interface Props {
+  series: string;
+  posts: Post[];
+  currentId: string;
+}
+const { series, posts, currentId } = Astro.props;
+const index = posts.findIndex((p) => p.id === currentId);
+const prev = posts[index - 1];
+const next = posts[index + 1];
+const accent = accentFor(series);
+---
+
+<nav aria-label={`Series: ${series}`} class={`tile ${accent} not-prose my-10`} data-reveal>
+  <p class="eyebrow">Series · Part {index + 1} of {posts.length}</p>
+  <p class="font-display mt-1 text-2xl font-medium tracking-tight">{series}</p>
+  <div class="mt-5 flex gap-1" aria-hidden="true">
+    {posts.map((_, i) => <span class={`h-1.5 flex-1 rounded-full ${i <= index ? 'bg-ink' : 'bg-ink/20'}`} />)}
+  </div>
+  <div class="mt-5 flex justify-between gap-4 text-sm font-medium">
+    {
+      prev ? (
+        <a href={`/blog/${prev.id}`} class="hover:underline">
+          ← {prev.data.title}
+        </a>
+      ) : (
+        <span />
+      )
+    }
+    {
+      next && (
+        <a href={`/blog/${next.id}`} class="text-right hover:underline">
+          {next.data.title} →
+        </a>
+      )
+    }
+  </div>
+</nav>

@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import PostGrid from '../../components/PostGrid.astro';
+import { getPosts, groupByTag, slugify } from '../../utils/posts';
+
+export async function getStaticPaths() {
+  const byTag = groupByTag(await getPosts());
+  return [...byTag.entries()].map(([tag, posts]) => ({
+    params: { tag: slugify(tag) },
+    props: { tag, posts },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`Tagged: ${tag}`} description={`Posts tagged ${tag}.`}>
+  <PageHeader eyebrow="Topic" title={tag} />
+  <PostGrid {posts} />
+</BaseLayout>

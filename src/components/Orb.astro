@@ -1,0 +1,17 @@
+---
+// A slow 8-second breathing circle: grows on "breathe in", shrinks on "breathe out".
+---
+
+<div class="relative mx-auto grid aspect-square w-full max-w-sm place-items-center" aria-hidden="true">
+  <span class="orb-ring border-clay absolute inset-[18%] rounded-full border-2"></span>
+  <span class="orb-ring border-clay absolute inset-[18%] rounded-full border-2" style="animation-delay: -4s"></span>
+  <div
+    class="orb absolute inset-[14%] rounded-full shadow-2xl"
+    style="background: radial-gradient(circle at 30% 28%, var(--butter), var(--clay) 55%, var(--lilac) 100%)"
+  >
+  </div>
+  <p class="eyebrow relative text-[#1c1b18]">
+    <span class="label-inhale">breathe in</span>
+    <span class="label-exhale absolute inset-0 text-center">breathe out</span>
+  </p>
+</div>

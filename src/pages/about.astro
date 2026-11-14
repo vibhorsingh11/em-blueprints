@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { AUTHOR } from '../consts';
+---
+
+<BaseLayout title="About" description={AUTHOR.bio}>
+  <PageHeader eyebrow="About" title={`Hi, I'm ${AUTHOR.name.split(' ')[0]}.`} intro={AUTHOR.bio} />
+  <div class="prose prose-lg prose-mindful">
+    <p>
+      TODO: Tell your story here: your path from IC to EM, what you've learned, and who this blog
+      is for.
+    </p>
+  </div>
+</BaseLayout>
