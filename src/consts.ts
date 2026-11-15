@@ -3,7 +3,7 @@ export const SITE_DESCRIPTION =
   'Practical frameworks, systems, and deep dives for transitioning from engineer to engineering manager.';
 export const AUTHOR = {
   name: 'Vibhor Singh',
-  bio: 'Engineering leader writing about the craft of managing engineers.',
+  bio: 'Engineering manager and solution architect. I lead cross-functional teams and write about the move from engineer to manager.',
 };
 // `slug` must match the folder name under src/content/resources. Remove `comingSoon` once a track has published articles.
 export const RESOURCE_TRACKS = [

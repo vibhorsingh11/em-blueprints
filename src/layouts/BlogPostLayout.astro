@@ -7,6 +7,7 @@ import NewsletterForm from '../components/NewsletterForm.astro';
 import SeriesNav from '../components/SeriesNav.astro';
 import RelatedPosts from '../components/RelatedPosts.astro';
 import AuthorBio from '../components/AuthorBio.astro';
+import ShareButtons from '../components/ShareButtons.astro';
 import type { MarkdownHeading } from 'astro';
 import { accentFor, type Post } from '../utils/posts';
 
@@ -61,6 +62,7 @@ const { title, description, pubDate, updatedDate, series } = post.data;
       </div>
 
       <div class="max-w-[42rem]">
+        <ShareButtons {title} />
         {series && <SeriesNav {series} posts={seriesPosts} currentId={post.id} />}
         <div class="my-10"><NewsletterForm /></div>
         <AuthorBio />
