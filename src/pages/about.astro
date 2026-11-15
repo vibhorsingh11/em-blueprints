@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
 import { AUTHOR } from '../consts';
 ---
 
@@ -8,8 +9,73 @@ import { AUTHOR } from '../consts';
   <PageHeader eyebrow="About" title={`Hi, I'm ${AUTHOR.name.split(' ')[0]}.`} intro={AUTHOR.bio} />
   <div class="prose prose-lg prose-mindful">
     <p>
-      TODO: Tell your story here: your path from IC to EM, what you've learned, and who this blog
-      is for.
+      I started out as a software engineer and still think like one. These days I lead
+      cross-functional teams of up to 20 people, and I'm also the person clients call when they
+      need a technical decision explained in plain terms. This blog is where I write down what
+      that work has taught me.
     </p>
+
+    <h2>Why I write this</h2>
+    <p>
+      When I moved from writing code to leading the people who write it, I found plenty of advice
+      on management and plenty on engineering, and very little on the space between them. Nobody
+      told me that the hardest part would be letting go of the technical answer I could already
+      see. So I write the guide I wanted at the time: practical, specific, and honest about what
+      is awkward.
+    </p>
+
+    <h2>What I've done</h2>
+    <p>
+      My path has gone through both architecture and management, and I draw on both here.
+    </p>
+    <ul>
+      <li>
+        <strong>Leading teams.</strong> I run delivery across several projects at once. That
+        covers planning and estimation, budgets, risk, and the day-to-day work of keeping people
+        focused and growing. I run my own hiring, onboarding, feedback, and mentoring.
+      </li>
+      <li>
+        <strong>Architecture and consulting.</strong> I've led presales work, proofs of concept,
+        and MVPs. I've built as-is to to-be roadmaps for existing systems, and advised clients on
+        when, why, and how to adopt a technology, including when not to.
+      </li>
+      <li>
+        <strong>Cloud and delivery practice.</strong> I've worked on cloud designs spanning
+        compute, serverless, storage, databases, and messaging, and on the CI/CD, testing, and
+        code-quality practices that keep them shippable.
+      </li>
+      <li>
+        <strong>GenAI in real teams.</strong> I help teams choose and adopt GenAI tools, measure
+        whether they help, and use them safely. I care as much about prompt injection and
+        over-reliance as about the speed-ups.
+      </li>
+      <li>
+        <strong>Working across cultures.</strong> Most of my teams span countries and time
+        zones, so clear written communication and shared ways of working matter a lot to me.
+      </li>
+    </ul>
+
+    <h2>How I think about the job</h2>
+    <p>
+      I believe most team problems are system problems, not people problems. I would rather
+      fix an unclear process than blame the person caught in it. I take ownership when something
+      goes wrong, say so openly, and try to learn from it. I also like to coach more than I like
+      to instruct: ask a good question, then let the person find the answer.
+    </p>
+
+    <h2>Who this blog is for</h2>
+    <p>
+      Engineers wondering whether management is for them, new managers in their first year, and
+      experienced leads who want to compare notes. Nothing here is theory I haven't tried. Where
+      I'm drawing on someone else's research, I link to it, and where I got something wrong, I
+      say so.
+    </p>
+    <p>
+      If a post helped or you disagree with it, I'd like to hear from you. The best way to follow
+      along is the Sunday letter below.
+    </p>
+  </div>
+  <div class="mt-12">
+    <NewsletterForm />
   </div>
 </BaseLayout>
