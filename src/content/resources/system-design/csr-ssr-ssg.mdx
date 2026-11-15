@@ -1,0 +1,61 @@
+---
+title: 'CSR, SSR, and SSG Explained'
+description: 'Where and when a page is rendered, and how that choice affects speed, SEO, and cost.'
+topic: 'Rendering Strategies'
+order: 1
+pubDate: 2026-11-14
+draft: true
+---
+
+Every web page has to turn data into HTML at some point. The rendering strategy decides **where** that happens (browser or server) and **when** (at build time or on each request). That one decision shapes load speed, SEO, infrastructure cost, and how fresh your content can be.
+
+## Client-side rendering (CSR)
+
+The server sends a nearly empty HTML shell and a JavaScript bundle. The browser downloads the bundle, runs it, fetches data from an API, and builds the page.
+
+- **Strengths:** after the first load, navigation feels instant. The server only serves static files and JSON, so it is cheap and simple. Good for highly interactive, logged-in apps like dashboards and editors.
+- **Weaknesses:** the user sees a blank page until the JavaScript has loaded and run. First paint is slower, especially on weak devices and networks. Crawlers that don't run JavaScript see an empty shell.
+
+## Server-side rendering (SSR)
+
+The server builds the full HTML for every request and sends it ready to display. The browser then _hydrates_ it: JavaScript attaches event handlers so the page becomes interactive.
+
+- **Strengths:** the user sees content quickly, and crawlers get complete HTML. Content is always fresh because it is built per request, and it can be personalised.
+- **Weaknesses:** every request costs server compute, so you need a running server and must plan for scale. Time to first byte depends on how long rendering and data fetching take. The page is visible before it is interactive, until hydration finishes.
+
+## Static site generation (SSG)
+
+The HTML is built once, at build time, and served as plain files, usually from a CDN.
+
+- **Strengths:** the fastest option. There is no per-request compute, hosting is cheap, and a CDN absorbs traffic spikes. It is also very reliable.
+- **Weaknesses:** content is only as fresh as the last build. Sites with thousands of pages can have slow builds. Per-user content has to be loaded on the client afterwards.
+
+## Comparison
+
+| | CSR | SSR | SSG |
+| --- | --- | --- | --- |
+| HTML built | In the browser | On the server, per request | At build time |
+| First paint | Slowest | Fast | Fastest |
+| SEO | Weakest | Strong | Strong |
+| Content freshness | Always fresh via API | Always fresh | Fresh as of last build |
+| Server cost | Lowest | Highest | Lowest |
+
+## Choosing between them
+
+Ask three questions about each page:
+
+1. **Does it change per user or per request?** If yes, lean towards CSR or SSR. If no, SSG.
+2. **Does it need to be found by search engines or shared as a link?** If yes, avoid pure CSR.
+3. **How often does the content change?** Rarely: SSG. Constantly: SSR, or CSR fetching live data.
+
+Real products rarely pick one strategy for the whole site. A typical split is SSG for marketing pages and docs, SSR for product or search pages, and CSR for the logged-in app behind them. Many frameworks let you choose per route.
+
+## Hybrids worth knowing
+
+- **Incremental static regeneration (ISR):** static pages that are rebuilt in the background after a set time, so you get SSG speed with bounded staleness.
+- **Streaming SSR:** the server sends HTML in chunks as parts become ready, so slow data doesn't block the whole page.
+- **Islands:** the page is static HTML, and only the interactive components ship JavaScript. This site works that way.
+
+## Interview angle
+
+When asked to design a frontend, state the rendering strategy per page type and justify it with these trade-offs: freshness, SEO, personalisation, and cost. Naming the hybrid for each case shows you understand it is a spectrum, not a choice of one.
