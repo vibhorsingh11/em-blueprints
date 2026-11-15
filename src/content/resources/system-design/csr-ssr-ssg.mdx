@@ -20,7 +20,7 @@ The server sends a nearly empty HTML shell and a JavaScript bundle. The browser 
 
 The server builds the full HTML for every request and sends it ready to display. The browser then _hydrates_ it: JavaScript attaches event handlers so the page becomes interactive.
 
-- **Strengths:** the user sees content quickly, and crawlers get complete HTML. Content is always fresh because it is built per request, and it can be personalised.
+- **Strengths:** the user sees content quickly, and crawlers get complete HTML. Content is always fresh because it is built per request, and it can be personalized.
 - **Weaknesses:** every request costs server compute, so you need a running server and must plan for scale. Time to first byte depends on how long rendering and data fetching take. The page is visible before it is interactive, until hydration finishes.
 
 ## Static site generation (SSG)
@@ -32,13 +32,13 @@ The HTML is built once, at build time, and served as plain files, usually from a
 
 ## Comparison
 
-| | CSR | SSR | SSG |
-| --- | --- | --- | --- |
-| HTML built | In the browser | On the server, per request | At build time |
-| First paint | Slowest | Fast | Fastest |
-| SEO | Weakest | Strong | Strong |
-| Content freshness | Always fresh via API | Always fresh | Fresh as of last build |
-| Server cost | Lowest | Highest | Lowest |
+|                   | CSR                  | SSR                        | SSG                    |
+| ----------------- | -------------------- | -------------------------- | ---------------------- |
+| HTML built        | In the browser       | On the server, per request | At build time          |
+| First paint       | Slowest              | Fast                       | Fastest                |
+| SEO               | Weakest              | Strong                     | Strong                 |
+| Content freshness | Always fresh via API | Always fresh               | Fresh as of last build |
+| Server cost       | Lowest               | Highest                    | Lowest                 |
 
 ## Choosing between them
 
@@ -58,4 +58,4 @@ Real products rarely pick one strategy for the whole site. A typical split is SS
 
 ## Interview angle
 
-When asked to design a frontend, state the rendering strategy per page type and justify it with these trade-offs: freshness, SEO, personalisation, and cost. Naming the hybrid for each case shows you understand it is a spectrum, not a choice of one.
+When asked to design a frontend, state the rendering strategy per page type and justify it with these trade-offs: freshness, SEO, personalization, and cost. Naming the hybrid for each case shows you understand it is a spectrum, not a choice of one.
