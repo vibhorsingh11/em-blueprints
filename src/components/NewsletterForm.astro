@@ -1,13 +1,28 @@
 ---
 const action = import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '';
+// With no provider connected there is nothing to subscribe to, so the success popup is only
+// shown for design previews in dev. Production shows an honest "not connected" message instead.
+const preview = import.meta.env.DEV && !action;
+
+const inboxes = [
+  { name: 'Gmail', href: 'https://mail.google.com/', dot: 'bg-clay' },
+  { name: 'Outlook', href: 'https://outlook.live.com/mail/', dot: 'bg-sage' },
+  { name: 'Yahoo', href: 'https://mail.yahoo.com/', dot: 'bg-butter' },
+];
 ---
 
-<aside class="tile bg-ink text-paper not-prose !border-transparent" data-reveal>
+<aside
+  class="tile bg-ink text-paper not-prose !border-transparent"
+  data-reveal
+  data-newsletter
+  data-action={action}
+  data-preview={preview ? '' : undefined}
+>
   <p class="eyebrow text-clay">The Sunday letter</p>
   <h2 class="font-display mt-3 max-w-md text-3xl leading-tight font-medium tracking-tight">
     One calm, practical essay on leading engineers. <em class="text-butter">No noise.</em>
   </h2>
-  <form action={action} method="post" target="_blank" class="mt-6 flex flex-wrap gap-2">
+  <form action={action} method="post" target="_blank" class="mt-6 flex flex-wrap gap-2" data-form>
     <input
       type="email"
       name="email"
@@ -18,9 +33,242 @@ const action = import.meta.env.PUBLIC_NEWSLETTER_ACTION ?? '';
     />
     <button
       type="submit"
-      class="bg-clay rounded-full px-6 py-3 font-medium text-white transition hover:-translate-y-0.5 hover:shadow-lg"
+      data-submit
+      class="bg-clay rounded-full px-6 py-3 font-medium text-white transition hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
     >
       Subscribe →
     </button>
+    <p
+      class="text-paper/70 w-full text-sm empty:hidden"
+      role="status"
+      aria-live="polite"
+      data-status
+    >
+    </p>
   </form>
+
+  <dialog
+    class="welcome bg-paper text-ink border-ink/15 m-auto w-[min(30rem,calc(100vw-2rem))] rounded-[2rem] border p-0 backdrop:bg-black/60"
+    aria-labelledby="welcome-title"
+    data-dialog
+  >
+    <div class="relative overflow-hidden px-6 pt-8 pb-6 sm:px-9 sm:pt-10">
+      <button
+        type="button"
+        class="text-muted hover:text-ink absolute top-4 right-5 text-2xl leading-none"
+        aria-label="Close"
+        data-close>×</button
+      >
+
+      <svg viewBox="0 0 64 64" class="welcome-badge size-16" aria-hidden="true">
+        <circle cx="32" cy="32" r="30" class="fill-sage"></circle>
+        <path
+          class="welcome-check"
+          d="M19 33.5l9 9 17-20"
+          fill="none"
+          stroke="#fff"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+
+      <p class="eyebrow text-muted mt-5">You're on the list</p>
+      <h2
+        id="welcome-title"
+        class="font-display mt-2 text-4xl leading-[1.1] font-medium tracking-tight"
+      >
+        Pull up a chair, <span class="welcome-mark">friend.</span>
+      </h2>
+      <p class="text-muted mt-4">
+        A note is on its way to
+        <strong
+          class="bg-paper2 text-ink inline-block max-w-full truncate rounded-full px-3 py-0.5 align-bottom text-sm"
+          data-email></strong>
+      </p>
+
+      <ol class="welcome-steps mt-7 space-y-6">
+        <li>
+          <h3 class="font-display text-lg font-medium">Confirm your email</h3>
+          <p class="text-muted mt-1 text-sm">
+            Open the message and tap the link inside. If it hides, look in Promotions or spam.
+          </p>
+          <ul class="mt-3 flex flex-wrap gap-2">
+            {
+              inboxes.map((i) => (
+                <li>
+                  <a
+                    href={i.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="border-ink/20 hover:bg-ink hover:text-paper inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium transition"
+                  >
+                    <span class={`size-2 rounded-full ${i.dot}`} aria-hidden="true" />
+                    {i.name}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </li>
+        <li>
+          <h3 class="font-display text-lg font-medium">One essay, every Sunday</h3>
+          <p class="text-muted mt-1 text-sm">
+            A single practical piece on leading engineers. No noise, no filler.
+          </p>
+        </li>
+        <li>
+          <h3 class="font-display text-lg font-medium">Leave whenever you like</h3>
+          <p class="text-muted mt-1 text-sm">
+            Every letter has a one-click unsubscribe at the bottom.
+          </p>
+        </li>
+      </ol>
+
+      <button type="button" class="btn mt-8 w-full justify-center" data-close>
+        Keep reading →
+      </button>
+    </div>
+  </dialog>
 </aside>
+
+<style>
+  .welcome[open] {
+    animation: welcome-in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+  }
+  .welcome::backdrop {
+    backdrop-filter: blur(3px);
+  }
+  .welcome-check {
+    stroke-dasharray: 44;
+    stroke-dashoffset: 44;
+  }
+  .welcome[open] .welcome-check {
+    animation: welcome-draw 0.5s 0.25s ease-out forwards;
+  }
+  .welcome[open] .welcome-badge {
+    animation: welcome-pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+  }
+  /* A hand-drawn highlighter stroke under the last word of the headline. */
+  .welcome-mark {
+    background: linear-gradient(
+      transparent 62%,
+      var(--butter) 62%,
+      var(--butter) 92%,
+      transparent 92%
+    );
+    padding: 0 0.15em;
+  }
+  /* Vertical thread joining the numbered steps. */
+  .welcome-steps {
+    counter-reset: step;
+    border-left: 1px dashed color-mix(in srgb, currentColor 25%, transparent);
+    margin-left: 0.9rem;
+  }
+  .welcome-steps > li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 1.75rem;
+  }
+  .welcome-steps > li::before {
+    content: counter(step);
+    position: absolute;
+    left: -0.9rem;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 9999px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  @keyframes welcome-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.97);
+    }
+  }
+  @keyframes welcome-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes welcome-pop {
+    from {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .welcome[open],
+    .welcome[open] .welcome-badge {
+      animation: none;
+    }
+    .welcome-check {
+      stroke-dashoffset: 0;
+      animation: none !important;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-newsletter]').forEach((root) => {
+    const form = root.querySelector<HTMLFormElement>('[data-form]');
+    const dialog = root.querySelector<HTMLDialogElement>('[data-dialog]');
+    const status = root.querySelector<HTMLElement>('[data-status]');
+    const submit = root.querySelector<HTMLButtonElement>('[data-submit]');
+    const emailOut = root.querySelector<HTMLElement>('[data-email]');
+    if (!form || !dialog || !status || !submit) return;
+
+    const action = root.dataset.action ?? '';
+    const preview = 'preview' in root.dataset;
+
+    root
+      .querySelectorAll('[data-close]')
+      .forEach((b) => b.addEventListener('click', () => dialog.close()));
+    // A click on the backdrop targets the dialog element itself.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = '';
+      const data = new FormData(form);
+      const email = String(data.get('email') ?? '').trim();
+
+      const celebrate = () => {
+        if (emailOut) emailOut.textContent = email;
+        form.reset();
+        dialog.showModal();
+      };
+
+      if (!action) {
+        if (preview) celebrate();
+        else status.textContent = "The newsletter isn't connected yet. Please check back soon.";
+        return;
+      }
+
+      submit.disabled = true;
+      const label = submit.textContent;
+      submit.textContent = 'Subscribing…';
+      try {
+        // Providers' public forms don't send CORS headers, so the response is opaque. A resolved
+        // request means the browser delivered it; a rejected one means a network failure.
+        await fetch(action, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: new URLSearchParams([['email', email]]),
+        });
+        celebrate();
+      } catch {
+        status.textContent = "That didn't go through. Check your connection and try again.";
+      } finally {
+        submit.disabled = false;
+        submit.textContent = label;
+      }
+    });
+  });
+</script>
