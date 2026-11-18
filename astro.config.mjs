@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 // TODO: replace with your real domain once purchased.
-const SITE = 'https://example.com';
+const SITE = 'https://em-blueprints.pages.dev/';
 
 export default defineConfig({
   site: SITE,
